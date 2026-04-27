@@ -32,8 +32,6 @@ st.markdown("""
 <p style='text-align:center; color:gray;'>AI-powered academic risk analysis</p>
 """, unsafe_allow_html=True)
 
-st.markdown("---")
-
 # ---------- FORM ----------
 with st.container():
 
@@ -48,7 +46,6 @@ with st.container():
     with col2:
         absences = st.number_input("Absences", 0, 50, 5)
 
-    st.markdown("---")
 
     # ---------- FAMILY ----------
     st.markdown("### Family Background")
@@ -59,8 +56,6 @@ with st.container():
 
     with col2:
         Fedu = st.selectbox("Father Education", [0,1,2,3,4])
-
-    st.markdown("---")
 
     # ---------- LIFESTYLE ----------
     st.markdown("### Lifestyle")

@@ -7,100 +7,56 @@ import plotly.graph_objects as go
 st.set_page_config(page_title="Student Risk AI", layout="centered")
 
 # ---------- LOAD MODEL ----------
-model = pickle.load(open("model.pkl", "rb"))
+@st.cache_resource
+def load_model():
+    return pickle.load(open("model.pkl", "rb"))
 
-# ---------- STYLE ----------
-st.markdown("""
-<style>
-.block-container {
-    max-width: 750px;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-}
-
-/* MAIN CARD */
-.main-card {
-    background-color: #111;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.4);
-    margin-bottom: 20px;
-}
-
-/* SECTION CARDS */
-.section-card {
-    background-color: #1a1a1a;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-</style>
-""", unsafe_allow_html=True)
+model = load_model()
 
 # ---------- HEADER ----------
-st.markdown("""
-<h1 style='text-align:center;'>Student Risk Predictor</h1>
-<p style='text-align:center; color:gray;'>AI-powered academic risk analysis</p>
-""", unsafe_allow_html=True)
+st.title("Student Risk Predictor")
+st.write("Enter student details and get risk prediction instantly.")
 
-# ---------- MAIN CARD START ----------
-st.markdown('<div class="main-card">', unsafe_allow_html=True)
+# ---------- FORM ----------
+with st.form("student_form"):
 
-# ---------- ACADEMIC ----------
-st.markdown('<div class="section-card">', unsafe_allow_html=True)
-st.markdown("### Academic")
+    st.subheader("Academic")
 
-col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2)
 
-with col1:
-    studytime = st.selectbox("Study Time", [1,2,3,4])
-    failures = st.selectbox("Past Failures", [0,1,2,3])
+    with col1:
+        studytime = st.selectbox("Study Time", [1,2,3,4])
+        failures = st.selectbox("Past Failures", [0,1,2,3])
 
-with col2:
-    absences = st.number_input("Absences", 0, 50, 5)
+    with col2:
+        absences = st.number_input("Absences", 0, 50, 5)
 
-st.markdown('</div>', unsafe_allow_html=True)
+    st.subheader("Family Background")
 
-# ---------- FAMILY ----------
-st.markdown('<div class="section-card">', unsafe_allow_html=True)
-st.markdown("### Family Background")
+    col1, col2 = st.columns(2)
 
-col1, col2 = st.columns(2)
+    with col1:
+        Medu = st.selectbox("Mother Education", [0,1,2,3,4])
 
-with col1:
-    Medu = st.selectbox("Mother Education", [0,1,2,3,4])
+    with col2:
+        Fedu = st.selectbox("Father Education", [0,1,2,3,4])
 
-with col2:
-    Fedu = st.selectbox("Father Education", [0,1,2,3,4])
+    st.subheader("Lifestyle")
 
-st.markdown('</div>', unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
 
-# ---------- LIFESTYLE ----------
-st.markdown('<div class="section-card">', unsafe_allow_html=True)
-st.markdown("### Lifestyle")
+    with col1:
+        goout = st.selectbox("Going Out", [1,2,3,4,5])
+        Dalc = st.selectbox("Workday Alcohol", [1,2,3,4,5])
 
-col1, col2 = st.columns(2)
+    with col2:
+        Walc = st.selectbox("Weekend Alcohol", [1,2,3,4,5])
+        health = st.selectbox("Health", [1,2,3,4,5])
 
-with col1:
-    goout = st.selectbox("Going Out", [1,2,3,4,5])
-    Dalc = st.selectbox("Workday Alcohol", [1,2,3,4,5])
-
-with col2:
-    Walc = st.selectbox("Weekend Alcohol", [1,2,3,4,5])
-    health = st.selectbox("Health", [1,2,3,4,5])
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-# ---------- BUTTON ----------
-st.markdown("<br>", unsafe_allow_html=True)
-
-predict = st.button("Predict Risk", use_container_width=True)
-
-# ---------- MAIN CARD END ----------
-st.markdown('</div>', unsafe_allow_html=True)
+    submit = st.form_submit_button("Predict")
 
 # ---------- PREDICTION ----------
-if predict:
+if submit:
 
     input_df = pd.DataFrame([{
         'studytime': studytime,
@@ -117,7 +73,7 @@ if predict:
     pred = model.predict(input_df)[0]
     prob = model.predict_proba(input_df)[0][1]
 
-    st.markdown("## Prediction Result")
+    st.markdown("### Result")
 
     if prob < 0.4:
         st.success(f"Low Risk ({prob:.2f})")
@@ -145,7 +101,7 @@ if predict:
     st.plotly_chart(fig, use_container_width=True)
 
     # ---------- INSIGHTS ----------
-    st.markdown("## Key Risk Factors")
+    st.markdown("### Key Risk Factors")
 
     insights = []
 
@@ -162,6 +118,6 @@ if predict:
 
     if insights:
         for i in insights:
-            st.write(f"• {i}")
+            st.write(f"- {i}")
     else:
-        st.write("• No major risk factors detected")
+        st.write("- No major risk factors detected")

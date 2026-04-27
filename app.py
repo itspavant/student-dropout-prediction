@@ -11,11 +11,10 @@ model = pickle.load(open("model.pkl", "rb"))
 
 # ---------- HEADER ----------
 st.markdown("""
-<h1 style='text-align:center;'>🎓 Student Risk Predictor</h1>
+<h1 style='text-align:center;'> Student Risk Predictor</h1>
 <p style='text-align:center; color:gray;'>Enter details and predict student risk instantly</p>
 """, unsafe_allow_html=True)
 
-st.divider()
 
 # ---------- CARD STYLE ----------
 st.markdown("""
@@ -46,7 +45,7 @@ with st.container():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.button("🚀 Predict", use_container_width=True):
+    if st.button("Predict", use_container_width=True):
 
         input_df = pd.DataFrame([{
             'studytime': studytime,

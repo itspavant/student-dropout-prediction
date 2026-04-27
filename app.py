@@ -9,43 +9,75 @@ st.set_page_config(page_title="Student Risk AI", layout="centered")
 # ---------- LOAD MODEL ----------
 model = pickle.load(open("model.pkl", "rb"))
 
-# ---------- HEADER ----------
-st.markdown("""
-<h1 style='text-align:center;'> Student Risk Predictor</h1>
-<p style='text-align:center; color:gray;'>Enter details and predict student risk instantly</p>
-""", unsafe_allow_html=True)
-
-
-# ---------- CARD STYLE ----------
+# ---------- STYLE ----------
 st.markdown("""
 <style>
 .block-container {
+    max-width: 750px;
     padding-top: 2rem;
     padding-bottom: 2rem;
-    max-width: 700px;
+}
+.section {
+    padding: 15px 10px;
+    border-radius: 12px;
+    background-color: #111;
+    margin-bottom: 20px;
 }
 </style>
 """, unsafe_allow_html=True)
 
+# ---------- HEADER ----------
+st.markdown("""
+<h1 style='text-align:center;'>Student Risk Predictor</h1>
+<p style='text-align:center; color:gray;'>AI-powered academic risk analysis</p>
+""", unsafe_allow_html=True)
+
+st.markdown("---")
+
 # ---------- FORM ----------
 with st.container():
-    st.subheader("📋 Student Details")
 
-    studytime = st.slider("Study Time", 1, 4, 2)
-    failures = st.slider("Past Failures", 0, 3, 0)
-    absences = st.slider("Absences", 0, 50, 5)
+    # ---------- ACADEMIC ----------
+    st.markdown("### Academic")
+    col1, col2 = st.columns(2)
 
-    Medu = st.slider("Mother Education", 0, 4, 2)
-    Fedu = st.slider("Father Education", 0, 4, 2)
+    with col1:
+        studytime = st.selectbox("Study Time", [1,2,3,4])
+        failures = st.selectbox("Past Failures", [0,1,2,3])
 
-    goout = st.slider("Going Out", 1, 5, 3)
-    Dalc = st.slider("Workday Alcohol", 1, 5, 1)
-    Walc = st.slider("Weekend Alcohol", 1, 5, 2)
-    health = st.slider("Health", 1, 5, 3)
+    with col2:
+        absences = st.number_input("Absences", 0, 50, 5)
+
+    st.markdown("---")
+
+    # ---------- FAMILY ----------
+    st.markdown("### Family Background")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        Medu = st.selectbox("Mother Education", [0,1,2,3,4])
+
+    with col2:
+        Fedu = st.selectbox("Father Education", [0,1,2,3,4])
+
+    st.markdown("---")
+
+    # ---------- LIFESTYLE ----------
+    st.markdown("### Lifestyle")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        goout = st.selectbox("Going Out", [1,2,3,4,5])
+        Dalc = st.selectbox("Workday Alcohol", [1,2,3,4,5])
+
+    with col2:
+        Walc = st.selectbox("Weekend Alcohol", [1,2,3,4,5])
+        health = st.selectbox("Health", [1,2,3,4,5])
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.button("Predict", use_container_width=True):
+    # ---------- BUTTON ----------
+    if st.button("Predict Risk", use_container_width=True):
 
         input_df = pd.DataFrame([{
             'studytime': studytime,
@@ -65,16 +97,20 @@ with st.container():
         st.divider()
 
         # ---------- RESULT ----------
-        if pred == 1:
-            st.error(f"⚠️ High Risk ({prob:.2f})")
+        st.markdown("## Prediction Result")
+
+        if prob < 0.4:
+            st.success(f"Low Risk ({prob:.2f})")
+        elif prob < 0.7:
+            st.warning(f"Medium Risk ({prob:.2f})")
         else:
-            st.success(f"✅ Low Risk ({prob:.2f})")
+            st.error(f"High Risk ({prob:.2f})")
 
         # ---------- GAUGE ----------
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=prob * 100,
-            title={'text': "Risk Level"},
+            title={'text': "Risk Level (%)"},
             gauge={
                 'axis': {'range': [0, 100]},
                 'bar': {'color': "#ff4b4b"},
@@ -88,12 +124,24 @@ with st.container():
 
         st.plotly_chart(fig, use_container_width=True)
 
-        # ---------- SIMPLE INSIGHT ----------
-        st.subheader("🧠 Key Factors")
+        # ---------- INSIGHTS ----------
+        st.markdown("## Key Risk Factors")
+
+        insights = []
 
         if failures >= 2:
-            st.write("• High past failures")
+            insights.append("High past failures")
         if absences > 10:
-            st.write("• High absences")
+            insights.append("High absenteeism")
         if studytime <= 2:
-            st.write("• Low study time")
+            insights.append("Low study time")
+        if goout >= 4:
+            insights.append("High social activity")
+        if Dalc >= 3 or Walc >= 3:
+            insights.append("High alcohol consumption")
+
+        if insights:
+            for i in insights:
+                st.write(f"• {i}")
+        else:
+            st.write("• No major risk factors detected")

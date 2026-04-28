@@ -176,7 +176,7 @@ with st.form("student_form"):
         age = st.number_input("Age at Enrollment", 15, 80, 20)
         course = st.number_input("Course Code", 1, 20, 1)
 
-    submit = st.form_submit_button("🚀 Predict Risk")
+    submit = st.form_submit_button("Predict Risk")
 
 # ---------- PREDICTION ----------
 if submit:

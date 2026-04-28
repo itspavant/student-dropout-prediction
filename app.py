@@ -131,6 +131,21 @@ import plotly.graph_objects as go
 # ---------- CONFIG ----------
 st.set_page_config(page_title="Student Risk AI", layout="centered")
 
+features = [
+    'Curricular units 2nd sem (approved)',
+    'Curricular units 1st sem (approved)',
+    'Curricular units 2nd sem (grade)',
+    'Curricular units 1st sem (grade)',
+    'Tuition fees up to date',
+    'Admission grade',
+    'Previous qualification (grade)',
+    'Age at enrollment',
+    'Course',
+    'Curricular units 2nd sem (evaluations)',
+    'Curricular units 1st sem (evaluations)',
+    'Curricular units 1st sem (enrolled)'
+]
+
 # ---------- LOAD ----------
 @st.cache_resource
 def load_all():
@@ -195,6 +210,8 @@ if submit:
         'Curricular units 1st sem (evaluations)': eval1,
         'Curricular units 1st sem (enrolled)': enrolled1
     }])
+
+    input_data = input_data[features]
 
     # scale
     scaled = scaler.transform(input_data)

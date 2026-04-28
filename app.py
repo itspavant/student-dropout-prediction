@@ -157,39 +157,95 @@ def load_all():
 model, scaler, features = load_all()
 
 # ---------- HEADER ----------
-st.title("Student Risk AI")
-st.write("Predict student dropout risk using academic and financial data")
+st.title("Student Dropout Risk Predictor")
+st.write("Enter student academic details to estimate dropout risk")
 
 # ---------- FORM ----------
 with st.form("student_form"):
 
-    st.subheader("Academic Performance")
+    st.subheader("Academic Performance (First 2 Semesters)")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        approved1 = st.number_input("1st Sem Approved Subjects", 0, 15, 5)
-        grade1 = st.number_input("1st Sem Grade", 0.0, 20.0, 10.0)
-        eval1 = st.number_input("1st Sem Evaluations", 0, 20, 6)
-        enrolled1 = st.number_input("1st Sem Enrolled Subjects", 0, 15, 6)
+        approved1 = st.number_input(
+            "Subjects Passed (Semester 1)",
+            0, 15, 5,
+            help="Out of total subjects, how many were passed"
+        )
+
+        grade1 = st.number_input(
+            "Average Marks (Semester 1)",
+            0.0, 20.0, 10.0,
+            help="Typical range: 0–20"
+        )
+
+        eval1 = st.number_input(
+            "Exams Attempted (Semester 1)",
+            0, 20, 6,
+            help="Number of tests/assessments attended"
+        )
+
+        enrolled1 = st.number_input(
+            "Subjects Registered (Semester 1)",
+            0, 15, 6,
+            help="Total subjects taken"
+        )
 
     with col2:
-        approved2 = st.number_input("2nd Sem Approved Subjects", 0, 15, 5)
-        grade2 = st.number_input("2nd Sem Grade", 0.0, 20.0, 10.0)
-        eval2 = st.number_input("2nd Sem Evaluations", 0, 20, 6)
+        approved2 = st.number_input(
+            "Subjects Passed (Semester 2)",
+            0, 15, 5
+        )
+
+        grade2 = st.number_input(
+            "Average Marks (Semester 2)",
+            0.0, 20.0, 10.0
+        )
+
+        eval2 = st.number_input(
+            "Exams Attempted (Semester 2)",
+            0, 20, 6
+        )
 
     st.subheader("Financial & Background")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        fees = st.selectbox("Tuition Fees Up To Date", [0,1])
-        admission = st.number_input("Admission Grade", 0.0, 200.0, 120.0)
-        prev_grade = st.number_input("Previous Qualification Grade", 0.0, 200.0, 120.0)
+        fees_status = st.selectbox(
+            "Are Tuition Fees Paid?",
+            ["Yes", "No"]
+        )
+        fees = 1 if fees_status == "Yes" else 0
+
+        admission = st.number_input(
+            "Admission Score",
+            80.0, 200.0, 120.0,
+            help="Institution-specific score (not percentage)"
+        )
+
+        prev_grade = st.number_input(
+            "Previous Academic Score",
+            80.0, 200.0, 120.0
+        )
 
     with col2:
-        age = st.number_input("Age at Enrollment", 15, 80, 20)
-        course = st.number_input("Course Code", 1, 20, 1)
+        age = st.number_input(
+            "Age",
+            15, 80, 20
+        )
+
+        course_values = [
+            33,171,8014,9003,9070,9085,9119,9130,
+            9147,9238,9254,9500,9556,9670,9773,9853,9991
+        ]
+
+        course = st.selectbox(
+            "Course (Program ID)",
+            course_values,
+            help="Different academic programs (encoded)"
+        )
 
     submit = st.form_submit_button("Predict Risk")
 

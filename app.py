@@ -133,17 +133,19 @@ st.set_page_config(page_title="Student Risk AI", layout="centered")
 
 features = [
     'Curricular units 2nd sem (approved)',
-    'Curricular units 1st sem (approved)',
     'Curricular units 2nd sem (grade)',
+    'Curricular units 1st sem (approved)',
     'Curricular units 1st sem (grade)',
     'Tuition fees up to date',
-    'Admission grade',
-    'Previous qualification (grade)',
     'Age at enrollment',
-    'Course',
     'Curricular units 2nd sem (evaluations)',
+    'Course',
+    'Admission grade',
     'Curricular units 1st sem (evaluations)',
-    'Curricular units 1st sem (enrolled)'
+    'Previous qualification (grade)',
+    'Curricular units 1st sem (enrolled)',
+    'Curricular units 2nd sem (enrolled)',   
+    'Scholarship holder',                   
 ]
 
 # ---------- LOAD ----------
@@ -192,6 +194,7 @@ with st.form("student_form"):
             help="Total subjects taken"
         )
 
+
     with col2:
         approved2 = st.number_input(
             "Subjects Passed (Semester 2)",
@@ -206,6 +209,11 @@ with st.form("student_form"):
         eval2 = st.number_input(
             "Exams Attempted (Semester 2)",
             0, 20, 6
+        )
+
+        enrolled2 = st.number_input(
+            "Subjects Registered (Semester 2)",
+            0, 15, 6
         )
 
     st.subheader("Financial & Background")
@@ -247,6 +255,12 @@ with st.form("student_form"):
             help="Different academic programs (encoded)"
         )
 
+        scholarship_status = st.selectbox(
+            "Scholarship Status",
+            ["No", "Yes"]
+        )
+        scholarship = 1 if scholarship_status == "Yes" else 0
+
     submit = st.form_submit_button("Predict Risk")
 
 # ---------- PREDICTION ----------
@@ -265,6 +279,8 @@ if submit:
         'Curricular units 2nd sem (evaluations)': eval2,
         'Curricular units 1st sem (evaluations)': eval1,
         'Curricular units 1st sem (enrolled)': enrolled1
+        'Curricular units 2nd sem (enrolled)': enrolled2, 
+        'Scholarship holder': scholarship,  
     }])
 
     input_data = input_data[features]
@@ -308,19 +324,16 @@ if submit:
     insights = []
 
     if approved1 < 3 or approved2 < 3:
-        insights.append("Low number of approved subjects")
+        insights.append("Student is failing multiple subjects")
 
     if grade1 < 10 or grade2 < 10:
         insights.append("Low academic performance")
 
     if fees == 0:
-        insights.append("Tuition fees not paid")
+        insights.append("Tuition fees not paid (financial risk)")
 
     if eval1 < 3 or eval2 < 3:
         insights.append("Low exam participation")
 
-    if insights:
-        for i in insights:
-            st.write(f"- {i}")
-    else:
-        st.write("- No major risk factors detected")
+    if scholarship == 0:
+        insights.append("No financial support (no scholarship)")

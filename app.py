@@ -142,13 +142,13 @@ def load_all():
 model, scaler, features = load_all()
 
 # ---------- HEADER ----------
-st.title("🎓 Student Risk AI")
+st.title("Student Risk AI")
 st.write("Predict student dropout risk using academic and financial data")
 
 # ---------- FORM ----------
 with st.form("student_form"):
 
-    st.subheader("📊 Academic Performance")
+    st.subheader("Academic Performance")
 
     col1, col2 = st.columns(2)
 
@@ -163,7 +163,7 @@ with st.form("student_form"):
         grade2 = st.number_input("2nd Sem Grade", 0.0, 20.0, 10.0)
         eval2 = st.number_input("2nd Sem Evaluations", 0, 20, 6)
 
-    st.subheader("💰 Financial & Background")
+    st.subheader("Financial & Background")
 
     col1, col2 = st.columns(2)
 
@@ -176,7 +176,7 @@ with st.form("student_form"):
         age = st.number_input("Age at Enrollment", 15, 80, 20)
         course = st.number_input("Course Code", 1, 20, 1)
 
-    submit = st.form_submit_button("🚀 Predict Risk")
+    submit = st.form_submit_button("Predict Risk")
 
 # ---------- PREDICTION ----------
 if submit:
@@ -202,7 +202,7 @@ if submit:
     prob = model.predict_proba(scaled)[0][1]
     pred = model.predict(scaled)[0]
 
-    st.markdown("### 🎯 Result")
+    st.markdown("### Result")
 
     if prob < 0.4:
         st.success(f"Low Risk ({prob:.2f})")
@@ -230,7 +230,7 @@ if submit:
     st.plotly_chart(fig, use_container_width=True)
 
     # ---------- INSIGHTS ----------
-    st.markdown("### 🔍 Key Risk Factors")
+    st.markdown("### Key Risk Factors")
 
     insights = []
 

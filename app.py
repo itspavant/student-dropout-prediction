@@ -278,10 +278,10 @@ if submit:
         'Course': course,
         'Curricular units 2nd sem (evaluations)': eval2,
         'Curricular units 1st sem (evaluations)': eval1,
-        'Curricular units 1st sem (enrolled)': enrolled1
-        'Curricular units 2nd sem (enrolled)': enrolled2, 
-        'Scholarship holder': scholarship,  
-    }])
+        'Curricular units 1st sem (enrolled)': enrolled1,
+        'Curricular units 2nd sem (enrolled)': enrolled2,
+        'Scholarship holder': scholarship
+        }])
 
     input_data = input_data[features]
 
